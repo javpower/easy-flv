@@ -41,5 +41,5 @@ easy.flv.host=http://localhost:8200
 
 - 流转换地址：GET http://ip:port/get/flv/hls/stream_{channel}.flv
 - 浏览器直接播放测试： GET http://ip:port/flv/hls/stream_{channel}.flv
-
+![img_1.png](img_1.png)
 ![img.png](img.png)
