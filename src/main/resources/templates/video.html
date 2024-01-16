@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FLV Video Player</title>
+
+    <!-- 引入flv.js库 -->
+    <script src="https://cdn.jsdelivr.net/npm/flv.js@1.5.0/dist/flv.min.js"></script>
+</head>
+<body>
+
+
+<video id="videoPlayer" th:style="'width:' + ${width} + 'px; height:' + ${height} + 'px;'" controls></video>
+
+<script th:inline="javascript">
+        (function() {
+            var videoPath = /*[[${videoPath}]]*/ '';
+
+            if (flvjs.isSupported()) {
+                var videoElement = document.getElementById('videoPlayer');
+                var flvPlayer = flvjs.createPlayer({
+                    type: 'flv',
+                    url: videoPath
+                });
+
+                flvPlayer.attachMediaElement(videoElement);
+                flvPlayer.load();
+
+                // 播放视频
+                videoElement.play();
+            } else {
+                console.error('FLV not supported');
+            }
+        })();
+    </script>
+</body>
+</html>
