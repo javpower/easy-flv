@@ -1,6 +1,8 @@
 package com.gc.easy.flv.factories;
 
 import com.alibaba.fastjson.util.IOUtils;
+import com.gc.easy.flv.factories.state.OutputImage;
+import com.gc.easy.flv.service.IOutputStreamService;
 import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.ffmpeg.avcodec.AVPacket;
 import org.bytedeco.ffmpeg.global.avcodec;
@@ -10,6 +12,7 @@ import org.bytedeco.javacv.FFmpegFrameRecorder;
 import javax.servlet.AsyncContext;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -60,11 +63,16 @@ public class ConverterFactories extends Thread implements Converter {
 	 */
 	private Map<String, Converter> factories;
 
-	public ConverterFactories(String url, String key, Map<String, Converter> factories, List<AsyncContext> outEntitys) {
+	private IOutputStreamService iOutputStreamService;
+	private Integer channel;
+
+	public ConverterFactories(String url, String key, Map<String, Converter> factories, List<AsyncContext> outEntitys, IOutputStreamService iOutputStreamService,Integer channel) {
 		this.url = url;
 		this.key = key;
 		this.factories = factories;
 		this.outEntitys = outEntitys;
+		this.iOutputStreamService=iOutputStreamService;
+		this.channel=channel;
 	}
 
 	@Override
@@ -116,6 +124,13 @@ public class ConverterFactories extends Thread implements Converter {
 						if (stream.size() > 0) {
 							byte[] b = stream.toByteArray();
 							stream.reset();
+							if(iOutputStreamService!=null){
+								OutputImage image = OutputImage.builder().image(b).recordTime(new Date()).channel(channel).build();
+								byte[] handler = iOutputStreamService.handler(image);
+								if(iOutputStreamService.write()){
+									b=handler;
+								}
+							}
 							writeResponse(b);
 							if (outEntitys.isEmpty()) {
 								log.info("没有输出退出");
@@ -134,7 +149,7 @@ public class ConverterFactories extends Thread implements Converter {
 			} else {
 				isCloseGrabberAndResponse = false;
 				// 需要转码为视频H264格式,音频AAC格式
-				ConverterTranFactories c = new ConverterTranFactories(url, key, factories, outEntitys, grabber);
+				ConverterTranFactories c = new ConverterTranFactories(url, key, factories, outEntitys, grabber,iOutputStreamService,channel);
 				factories.put(key, c);
 				c.start();
 			}

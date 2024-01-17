@@ -29,7 +29,8 @@ public class FLVController {
 					  HttpServletRequest request) {
 		String url = openFLVService.getUrl(channel);
 		if(!StringUtils.isEmpty(url)){
-			service.open(url, response, request);
+			service.open(channel,url, response, request);
 		}
 	}
+
 }

@@ -4,7 +4,9 @@ package com.gc.easy.flv.service.impl;
 import com.gc.easy.flv.factories.Converter;
 import com.gc.easy.flv.factories.ConverterFactories;
 import com.gc.easy.flv.service.IFLVService;
+import com.gc.easy.flv.service.IOutputStreamService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.AsyncContext;
@@ -27,9 +29,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FLVService implements IFLVService {
 
 	private ConcurrentHashMap<String, Converter> converters = new ConcurrentHashMap<>();
+	@Autowired(required = false)
+	private IOutputStreamService iOutputStreamService;
 
 	@Override
-	public void open(String url, HttpServletResponse response, HttpServletRequest request) {
+	public void open(Integer channel,String url, HttpServletResponse response, HttpServletRequest request) {
 		String key = md5(url);
 		AsyncContext async = request.startAsync();
 		async.setTimeout(0);
@@ -44,7 +48,7 @@ public class FLVService implements IFLVService {
 		} else {
 			List<AsyncContext> outs = new ArrayList<>();
 			outs.add(async);
-			ConverterFactories c = new ConverterFactories(url, key, converters, outs);
+			ConverterFactories c = new ConverterFactories(url, key, converters, outs,iOutputStreamService,channel);
 			c.start();
 			converters.put(key, c);
 		}
