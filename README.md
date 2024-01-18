@@ -44,10 +44,16 @@ easy.flv.host=http://localhost:8200
 
 ### 第五步：不想实现interface使用
   原地址：rtsp://XXXXXXXX <br>
-- protocol：rtsp
-- url：XXXXX
-- 流转换地址：GET http://ip:port/get/flv/hls/stream_rtsp?url=XXXXXX
-- 浏览器直接播放测试： GET http://ip:port/flv/hls/stream_rtsp?url=XXXXXX
+```Java
+public static void main(String[] args) throws UnsupportedEncodingException {
+
+        String url = "rtsp://XXXXXXXX";
+        String encodedUrl = java.net.URLEncoder.encode(url, "UTF-8");
+        System.out.println("编码：" + encodedUrl);
+}   
+```
+- 流转换地址：GET http://ip:port/get/flv/hls/stream?url=编码后的地址
+- 浏览器直接播放测试： GET http://ip:port/flv/hls/stream?url=编码后的地址
 
 ![img_1.png](img_1.png)
 ![img.png](img.png)

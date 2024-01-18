@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 
 /**
  * FLV流转换
@@ -32,11 +33,12 @@ public class FLVController {
 			service.open(channel,url, response, request);
 		}
 	}
-	@GetMapping(value = "/get/flv/hls/stream_{protocol}")
-	public void open1(@PathVariable(value = "protocol") String protocol,String url, HttpServletResponse response,
-					 HttpServletRequest request) {
-		if(!StringUtils.isEmpty(url)&&!StringUtils.isEmpty(protocol)){
-			service.open(protocol+"://"+url, response, request);
+	@GetMapping(value = "/get/flv/hls/stream")
+	public void open1(String url, HttpServletResponse response,
+					 HttpServletRequest request) throws UnsupportedEncodingException {
+		if(!StringUtils.isEmpty(url)){
+			String decodedUrl = java.net.URLDecoder.decode(url, "UTF-8");
+			service.open(decodedUrl, response, request);
 		}
 	}
 }

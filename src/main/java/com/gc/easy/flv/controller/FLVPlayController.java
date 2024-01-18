@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * FLV流转换
  * 
@@ -25,9 +27,10 @@ public class FLVPlayController {
 		model.addAttribute("height", flvConfig.getHeight());
 		return "video";
 	}
-	@GetMapping(value = "/flv/hls/stream_{protocol}")
-	public String getAppHtml1(@PathVariable(value = "protocol") String protocol,String url, Model model)  {
-		String videoPath=flvConfig.getHost()+"/get/flv/hls/stream_"+protocol+"?url="+url;
+	@GetMapping(value = "/flv/hls/stream")
+	public String getAppHtml1(String url, Model model) throws UnsupportedEncodingException {
+		String decodedUrl = java.net.URLDecoder.decode(url, "UTF-8");
+		String videoPath=flvConfig.getHost()+"/get/flv/hls/stream?url="+decodedUrl;
 		model.addAttribute("videoPath", videoPath);
 		model.addAttribute("wight", flvConfig.getWight());
 		model.addAttribute("height", flvConfig.getHeight());
