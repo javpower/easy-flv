@@ -27,7 +27,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class FLVService implements IFLVService {
 
 	private ConcurrentHashMap<String, Converter> converters = new ConcurrentHashMap<>();
-
+	@Override
+	public void open(String url, HttpServletResponse response, HttpServletRequest request) {
+		open(null,url,response,request);
+	}
 	@Override
 	public void open(Integer channel,String url, HttpServletResponse response, HttpServletRequest request) {
 		String key = md5(url);

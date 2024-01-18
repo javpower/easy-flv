@@ -37,9 +37,17 @@ public class RtspDataService implements IOpenFLVService {
 ```yml
 easy.flv.host=http://localhost:8200
 ```
-### 第四步：使用
+### 第四步：实现interface使用
 
 - 流转换地址：GET http://ip:port/get/flv/hls/stream_{channel}.flv
 - 浏览器直接播放测试： GET http://ip:port/flv/hls/stream_{channel}.flv
+
+### 第五步：不想实现interface使用
+  原地址：rtsp://XXXXXXXX <br>
+- protocol：rtsp
+- url：XXXXX
+- 流转换地址：GET http://ip:port/get/flv/hls/stream_rtsp?url=XXXXXX
+- 浏览器直接播放测试： GET http://ip:port/flv/hls/stream_rtsp?url=XXXXXX
+
 ![img_1.png](img_1.png)
 ![img.png](img.png)

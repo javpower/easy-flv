@@ -12,5 +12,6 @@ public interface IFLVService {
 	 * @param response
 	 */
 	public void open(Integer channel,String url, HttpServletResponse response, HttpServletRequest request);
+	public void open(String url, HttpServletResponse response, HttpServletRequest request);
 
 }

@@ -16,9 +16,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class FLVPlayController {
 	@Autowired
 	private FlvConfig flvConfig;
+
 	@GetMapping(value = "/flv/hls/stream_{channel}.flv")
 	public String getAppHtml(@PathVariable(value = "channel") Integer channel, Model model)  {
 		String videoPath=flvConfig.getHost()+"/get/flv/hls/stream_"+channel+".flv";
+		model.addAttribute("videoPath", videoPath);
+		model.addAttribute("wight", flvConfig.getWight());
+		model.addAttribute("height", flvConfig.getHeight());
+		return "video";
+	}
+	@GetMapping(value = "/flv/hls/stream_{protocol}")
+	public String getAppHtml1(@PathVariable(value = "protocol") String protocol,String url, Model model)  {
+		String videoPath=flvConfig.getHost()+"/get/flv/hls/stream_"+protocol+"?url="+url;
 		model.addAttribute("videoPath", videoPath);
 		model.addAttribute("wight", flvConfig.getWight());
 		model.addAttribute("height", flvConfig.getHeight());

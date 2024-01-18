@@ -32,5 +32,11 @@ public class FLVController {
 			service.open(channel,url, response, request);
 		}
 	}
-
+	@GetMapping(value = "/get/flv/hls/stream_{protocol}")
+	public void open1(@PathVariable(value = "protocol") String protocol,String url, HttpServletResponse response,
+					 HttpServletRequest request) {
+		if(!StringUtils.isEmpty(url)&&!StringUtils.isEmpty(protocol)){
+			service.open(protocol+"://"+url, response, request);
+		}
+	}
 }
