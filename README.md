@@ -16,7 +16,7 @@ rtsp、rtmp流地址转换成flv浏览器播放
 <dependency>
     <groupId>io.github.javpower</groupId>
     <artifactId>rtsp-converter-flv-spring-boot-starter</artifactId>
-    <version>1.5.9</version>
+    <version>1.5.9.1</version>
 </dependency>
 ```
 ### 第二步：实现interface

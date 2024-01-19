@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.github.javpower</groupId>
     <artifactId>rtsp-converter-flv-spring-boot-starter</artifactId>
-    <version>1.5.9</version>
+    <version>1.5.9.1</version>
     <name>rtsp-converter-flv-spring-boot-starter</name>
     <description>a tool about easy rtsp-converter-flv</description>
     <url>https://github.com/javpower/easy-flv</url>
