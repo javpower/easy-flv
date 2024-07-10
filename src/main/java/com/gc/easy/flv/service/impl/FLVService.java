@@ -4,6 +4,7 @@ package com.gc.easy.flv.service.impl;
 import com.gc.easy.flv.factories.Converter;
 import com.gc.easy.flv.factories.ConverterFactories;
 import com.gc.easy.flv.service.IFLVService;
+import com.gc.easy.flv.service.IOpenFLVService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +29,11 @@ public class FLVService implements IFLVService {
 
 	private ConcurrentHashMap<String, Converter> converters = new ConcurrentHashMap<>();
 	@Override
-	public void open(String url, HttpServletResponse response, HttpServletRequest request) {
-		open(null,url,response,request);
+	public void open(String url, HttpServletResponse response, HttpServletRequest request,IOpenFLVService openFLVService) {
+		open(null,url,response,request,openFLVService);
 	}
 	@Override
-	public void open(Integer channel,String url, HttpServletResponse response, HttpServletRequest request) {
+	public void open(Integer channel, String url, HttpServletResponse response, HttpServletRequest request, IOpenFLVService openFLVService) {
 		String key = md5(url);
 		AsyncContext async = request.startAsync();
 		async.setTimeout(0);
@@ -47,7 +48,7 @@ public class FLVService implements IFLVService {
 		} else {
 			List<AsyncContext> outs = new ArrayList<>();
 			outs.add(async);
-			ConverterFactories c = new ConverterFactories(url, key, converters, outs);
+			ConverterFactories c = new ConverterFactories(url, key, converters, outs,openFLVService);
 			c.start();
 			converters.put(key, c);
 		}

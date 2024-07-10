@@ -1,6 +1,7 @@
 package com.gc.easy.flv.factories;
 
 import com.alibaba.fastjson.util.IOUtils;
+import com.gc.easy.flv.service.IOpenFLVService;
 import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.ffmpeg.avcodec.AVPacket;
 import org.bytedeco.ffmpeg.global.avcodec;
@@ -60,12 +61,15 @@ public class ConverterFactories extends Thread implements Converter {
 	 */
 	private Map<String, Converter> factories;
 
+	private IOpenFLVService openFLVService;
 
-	public ConverterFactories(String url, String key, Map<String, Converter> factories, List<AsyncContext> outEntitys) {
+
+	public ConverterFactories(String url, String key, Map<String, Converter> factories, List<AsyncContext> outEntitys, IOpenFLVService openFLVService) {
 		this.url = url;
 		this.key = key;
 		this.factories = factories;
 		this.outEntitys = outEntitys;
+		this.openFLVService=openFLVService;
 	}
 
 	@Override
@@ -79,7 +83,7 @@ public class ConverterFactories extends Thread implements Converter {
 			}
 			grabber.start();
 			if (avcodec.AV_CODEC_ID_H264 == grabber.getVideoCodec()
-					&& (grabber.getAudioChannels() == 0 || avcodec.AV_CODEC_ID_AAC == grabber.getAudioCodec())) {
+					&& (grabber.getAudioChannels() == 0 || avcodec.AV_CODEC_ID_AAC == grabber.getAudioCodec())&&(openFLVService==null||!openFLVService.openPreview())) {
 				log.info("this url:{} converterFactories start", url);
 				// 来源视频H264格式,音频AAC格式
 				// 无须转码，更低的资源消耗，更低的延迟
@@ -135,7 +139,7 @@ public class ConverterFactories extends Thread implements Converter {
 			} else {
 				isCloseGrabberAndResponse = false;
 				// 需要转码为视频H264格式,音频AAC格式
-				ConverterTranFactories c = new ConverterTranFactories(url, key, factories, outEntitys, grabber);
+				ConverterTranFactories c = new ConverterTranFactories(url, key, factories, outEntitys, grabber,openFLVService);
 				factories.put(key, c);
 				c.start();
 			}

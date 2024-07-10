@@ -30,7 +30,7 @@ public class FLVController {
 					  HttpServletRequest request) {
 		String url = openFLVService.getUrl(channel);
 		if(!StringUtils.isEmpty(url)){
-			service.open(channel,url, response, request);
+			service.open(channel,url, response, request,openFLVService);
 		}
 	}
 	@GetMapping(value = "/get/flv/hls/stream")
@@ -38,7 +38,7 @@ public class FLVController {
 					 HttpServletRequest request) throws UnsupportedEncodingException {
 		if(!StringUtils.isEmpty(url)){
 			String decodedUrl = java.net.URLDecoder.decode(url, "UTF-8");
-			service.open(decodedUrl, response, request);
+			service.open(decodedUrl, response, request,openFLVService);
 		}
 	}
 }

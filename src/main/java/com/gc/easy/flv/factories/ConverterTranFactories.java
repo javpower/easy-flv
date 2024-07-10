@@ -1,11 +1,14 @@
 package com.gc.easy.flv.factories;
 
 import com.alibaba.fastjson.util.IOUtils;
+import com.gc.easy.flv.service.IOpenFLVService;
 import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FFmpegFrameRecorder;
 import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.OpenCVFrameConverter;
+import org.bytedeco.opencv.opencv_core.IplImage;
 
 import javax.servlet.AsyncContext;
 import java.io.ByteArrayOutputStream;
@@ -59,13 +62,18 @@ public class ConverterTranFactories extends Thread implements Converter {
 	 */
 	private Map<String, Converter> factories;
 
+	private OpenCVFrameConverter.ToIplImage converter;
+	private IOpenFLVService openFLVService;
+
+
 	public ConverterTranFactories(String url, String key, Map<String, Converter> factories,
-			List<AsyncContext> outEntitys, FFmpegFrameGrabber grabber) {
+								  List<AsyncContext> outEntitys, FFmpegFrameGrabber grabber, IOpenFLVService openFLVService) {
 		this.url = url;
 		this.key = key;
 		this.factories = factories;
 		this.outEntitys = outEntitys;
 		this.grabber = grabber;
+		this.openFLVService=openFLVService;
 	}
 
 	@Override
@@ -82,6 +90,8 @@ public class ConverterTranFactories extends Thread implements Converter {
 			stream = new ByteArrayOutputStream();
 			recorder = new FFmpegFrameRecorder(stream, grabber.getImageWidth(), grabber.getImageHeight(),
 					grabber.getAudioChannels());
+			converter = new OpenCVFrameConverter.ToIplImage();
+
 			recorder.setInterleaved(true);
 			recorder.setVideoOption("preset", "ultrafast");
 			recorder.setVideoOption("tune", "zerolatency");
@@ -107,6 +117,14 @@ public class ConverterTranFactories extends Thread implements Converter {
 			while (runing) {
 				// 抓取一帧
 				Frame f = grabber.grab();
+  				if(openFLVService!=null&&openFLVService.openPreview()){
+					  //预处理
+					IplImage iplImage = converter.convert(f);//抓取一帧视频并将其转换为图像，至于用这个图像用来做什么？加水印，人脸识别等等自行添加
+					if (iplImage != null) {
+						openFLVService.preview(iplImage);
+						f = converter.convert(iplImage);
+					}
+				}
 				if (f != null) {
 					try {
 						// 转码
